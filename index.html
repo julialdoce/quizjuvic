@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Nós Dois</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin-top: 50px;
+            position: relative;
+        }
+        h1 {
+            color: #ff4081;
+            font-size: 2.5em;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 15px 0;
+        }
+        button {
+            padding: 15px 30px;
+            background-color: #ff4081;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e91e63;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #ff4081;
+        }
+        .heart {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-size: cover;
+            animation: rise 2s ease-out forwards;
+            pointer-events: none;
+        }
+        .broken-heart {
+            background-image: url('https://img.icons8.com/emoji/48/000000/broken-heart.png');
+        }
+        .full-heart {
+            background-image: url('https://img.icons8.com/emoji/48/000000/red-heart.png');
+        }
+        @keyframes rise {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-200px);
+                opacity: 0;
+            }
+        }
+        .moving-button {
+            position: relative;
+            transition: transform 0.3s;
+        }
+        .jao-image {
+            width: 100px;
+            position: absolute;
+            top: -40px;
+            left: -40px;
+            animation: sway 3s infinite ease-in-out;
+        }
+        @keyframes sway {
+            0% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+            100% { transform: rotate(-10deg); }
+        }
+        .ted-image {
+            width: 120px;
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+        }
+        .audio-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+        .audio-button:hover {
+            background-color: #45a049;
+        }
+        .audio-player {
+            /* display: none; */
+        }
+        .hide-on-start {
+            display: none;
+        }
+        .photo {
+            width: 200px;
+            border-radius: 15px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz de Nós Dois</h1>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkPuHjeB190-SxU_uJOM6Si_txqqG4tm7RY85Wa2MNX9y_vwCuTuh_Rhw&s=10" alt="Jão Balançando" class="jao-image">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkivQvevZ1knt26aWbtZiiyjoL2EMVF_jhMKgEcDF83Ukz5M8E9hQ1oq_I&s=10" alt="Ted balançando" class="ted-image">
+        <button class="audio-button" id="audioButton" onclick="startQuiz()">Play Música</button>
+        <div id="quiz" class="hide-on-start">
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            <button onclick="checkAnswer()">Verificar Resposta</button>
+            <div class="result" id="result"></div>
+        </div>
+        <audio id="music" class="audio-player" loop>
+            <source src="https://drive.google.com/uc?export=download&id=1t6ImsdrSVQYvw5sA6TUxVCYM83_aZ6nZ" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+        </audio>
+        <div id="finalImages" class="hide-on-start">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS9ZQ6M3tSQ5Ph1Y3MfchxfMI3KdbgJpjf-Q&s" alt="Sua Foto" class="photo" id="yourPhoto">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS9ZQ6M3tSQ5Ph1Y3MfchxfMI3KdbgJpjf-Q&s" alt="Foto da Namorada" class="photo" id="partnerPhoto">
+        </div>
+    </div>
+    <script>
+        const quizData = [
+            { question: "Qual é a nossa comida favorita?", options: ["Pizza", "Sushi", "Hambúrguer", "Salada"], answer: "Hambúrguer" },
+            { question: "Qual foi o nosso primeiro filme juntos?", options: ["Titanic", "Não Lembro", "Harry Potter", "Vingadores"], answer: "Não
+
+ Lembro" },
+            { question: "Qual é o nosso destino de viagem dos sonhos?", options: ["Paris", "Nova York", "Tóquio", "Roma"], answer: "Roma" },
+            { question: "Qual meu artista favorito?", options: ["Jão", "Anavitória", "Billie", "Coldplay"], answer: "Billie" },
+            { question: "Qual é o nosso maior hobby juntos?", options: ["Cozinhar", "Assistir Séries", "Viajar", "Ler"], answer: "Assistir Séries" },
+            { question: "Qual minha cor favorita?", options: ["Azul", "Amarelo", "Preto", "Rosa"], answer: "Preto" },
+            { question: "Qual é o nosso lanche favorito?", options: ["Mc", "Bobs", "Giraffas", "Bk"], answer: "Bobs" },
+            { question: "Qual é a nossa música favorita?", options: ["Grão de areia", "Intimidade", "Alimenhamento milenar", "Little things"], answer: "Grão de areia" },
+            { question: "Qual é o nosso passatempo preferido em um dia de chuva?", options: ["Assistir filmes", "Ler", "Fazer bolos", "Jogar videogame"], answer: "Assistir filmes" },
+            { question: "Qual meu personagem favorito de the 100?", options: ["Octavia", "Clarke", "Lexa", "Lincoln"], answer: "Octavia" },
+            { question: "Quem ama mais?", options: ["Julia", "Vitória"], answer: "Julia" }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let isMusicPlaying = false;
+
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const resultElement = document.getElementById('result');
+        const musicPlayer = document.getElementById('music');
+        const audioButton = document.getElementById('audioButton');
+        const quizContainer = document.getElementById('quiz');
+        const finalImages = document.getElementById('finalImages');
+        const yourPhoto = document.getElementById('yourPhoto');
+        const partnerPhoto = document.getElementById('partnerPhoto');
+
+        function startQuiz() {
+            audioButton.classList.add('hide-on-start');
+            quizContainer.classList.remove('hide-on-start');
+            loadQuiz();
+            toggleMusic();
+        }
+
+        function loadQuiz() {
+            const currentQuiz = quizData[currentQuestion];
+            questionElement.textContent = currentQuiz.question;
+            optionsElement.innerHTML = '';
+            currentQuiz.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<input type="radio" name="option" value="${option}"> ${option}`;
+                li.querySelector('input').onclick = () => handleSpecialOption(option);
+                optionsElement.appendChild(li);
+            });
+        }
+
+        function checkAnswer() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (selectedOption) {
+                const answer = selectedOption.value;
+                if (answer === quizData[currentQuestion].answer) {
+                    score++;
+                    showHeart('full-heart');
+                    resultElement.textContent = 'Correto!';
+                } else {
+                    showHeart('broken-heart');
+                    resultElement.textContent = 'Incorreto. Tente novamente.';
+                }
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    setTimeout(() => {
+                        resultElement.innerHTML = `<p>Você acertou ${score} de ${quizData.length} perguntas!</p>`;
+                        finalImages.classList.remove('hide-on-start');
+                    }, 1000);
+                }
+            } else {
+                resultElement.textContent = 'Por favor, selecione uma opção.';
+            }
+        }
+
+        function showHeart(type) {
+            const heart = document.createElement('div');
+            heart.className = `heart ${type}`;
+            heart.style.left = `${Math.random() * window.innerWidth}px`;
+            heart.style.bottom = '0px';
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 2000);
+        }
+
+        function handleSpecialOption(option) {
+            if (quizData[currentQuestion].question === "Quem ama mais?" && option === "Vitória") {
+                const button = document.querySelector('input[value="Vitória"]').parentElement;
+                button.classList.add('moving-button');
+                button.style.transform = `translate(${Math.random() * 300}px, ${Math.random() * 100}px)`;
+            }
+        }
+
+        function toggleMusic() {
+            console.log("Toggling music. Is playing: ", isMusicPlaying);
+            if (isMusicPlaying) {
+                musicPlayer.pause();
+                audioButton.textContent = 'Play Música';
+            } else {
+                musicPlayer.play().then(() => {
+                    console.log("Music started playing");
+                }).catch((error) => {
+                    console.log("Error playing music:", error);
+                });
+                audioButton.textContent = 'Pause Música';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
